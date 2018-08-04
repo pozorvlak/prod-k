@@ -85,4 +85,4 @@ if __name__ == '__main__':
     if len(argv) > 1:
         print f2(int(argv[1]))
     else:
-        print f2(100)
+        print f2(2**64)
