@@ -27,11 +27,20 @@ def num_expressions(multiplicities, k, ps):
     min_factor = prod / k
     return len(filter(lambda x: min_factor < x < k, factors(multiplicities, ps)))
 
-def max_index(k, p):
-    return int(log(k, p))
+def max_index(limit, p):
+    return int(log(limit, p))
 
-def candidates(k, ps):
-    return itertools.product(*(range(max_index(k*k, p) + 1) for p in ps))
+def candidates(limit, ps):
+    if len(ps) == 0:
+        yield []
+    else:
+        p = ps[0]
+        for i in range(max_index(limit, p) + 1):
+            prod = p ** i
+            if prod > limit:
+                break
+            for c in candidates(limit / prod, ps[1:]):
+                yield [i] + c
 
 def useful_primes(k):
     prod = 1
@@ -46,14 +55,15 @@ def f2(k):
     max_products = 0
     best_number = 0
     count = 0
-    ps = useful_primes(k*k)
-    for c in candidates(k, ps):
+    limit = k*k
+    ps = useful_primes(limit)
+    for c in candidates(limit, ps):
         count += 1
         products = num_expressions(c, k, ps)
         if products > max_products:
             max_products = products
             best_number = product(c, ps)
-    print count
+    print "Considered", count, "candidates"
     return best_number, max_products
 
 def argmax(v):
