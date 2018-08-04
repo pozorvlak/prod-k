@@ -33,11 +33,20 @@ def max_index(k, p):
 def candidates(k, ps):
     return itertools.product(*(range(max_index(k*k, p) + 1) for p in ps))
 
+def useful_primes(k):
+    prod = 1
+    ps = []
+    for p in primes:
+        if prod * p < k:
+            prod *= p
+            ps.append(p)
+    return ps
+
 def f2(k):
     max_products = 0
     best_number = 0
     count = 0
-    ps = [p for p in primes if p < k]
+    ps = useful_primes(k*k)
     for c in candidates(k, ps):
         count += 1
         products = num_expressions(c, k, ps)
