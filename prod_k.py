@@ -30,16 +30,16 @@ def num_expressions(multiplicities, k, ps):
 def max_index(limit, p):
     return int(log(limit, p))
 
-def candidates(limit, ps):
+def candidates(limit, max_i, ps):
     if len(ps) == 0:
         yield []
     else:
         p = ps[0]
-        for i in range(max_index(limit, p) + 1):
+        for i in range(min(max_index(limit, p), max_i) + 1):
             prod = p ** i
             if prod > limit:
-                break
-            for c in candidates(limit / prod, ps[1:]):
+                return
+            for c in candidates(limit / prod, i, ps[1:]):
                 yield [i] + c
 
 def useful_primes(k):
@@ -57,7 +57,7 @@ def f2(k):
     count = 0
     limit = k*k
     ps = useful_primes(limit)
-    for c in candidates(limit, ps):
+    for c in candidates(limit, max_index(limit, 2), ps):
         count += 1
         products = num_expressions(c, k, ps)
         if products > max_products:
